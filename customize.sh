@@ -1,26 +1,26 @@
 #!/system/bin/sh
 
-chooseport_legacy() {
-  # Keycheck binary by someone755 @Github, idea for code below by Zappo @xda-developers
-  # Calling it first time detects previous input. Calling it second time will do what we want
-  [ "$1" ] && local delay=$1 || local delay=3
-  local error=false
-  while true; do
-    timeout 0 $MODPATH/common/addon/Volume-Key-Selector/tools/$ARCH32/keycheck
-    timeout $delay $MODPATH/common/addon/Volume-Key-Selector/tools/$ARCH32/keycheck
-    local sel=$?
-    if [ $sel -eq 42 ]; then
-      return 0
-    elif [ $sel -eq 41 ]; then
-      return 1
-    elif $error; then
-      abort "Volume key not detected!"
-    else
-      error=true
-      echo "Volume key not detected. Try again"
-    fi
-  done
-}
+# chooseport_legacy() {
+#   # Keycheck binary by someone755 @Github, idea for code below by Zappo @xda-developers
+#   # Calling it first time detects previous input. Calling it second time will do what we want
+#   [ "$1" ] && local delay=$1 || local delay=3
+#   local error=false
+#   while true; do
+#     timeout 0 $MODPATH/common/addon/Volume-Key-Selector/tools/$ARCH32/keycheck
+#     timeout $delay $MODPATH/common/addon/Volume-Key-Selector/tools/$ARCH32/keycheck
+#     local sel=$?
+#     if [ $sel -eq 42 ]; then
+#       return 0
+#     elif [ $sel -eq 41 ]; then
+#       return 1
+#     elif $error; then
+#       abort "Volume key not detected!"
+#     else
+#       error=true
+#       echo "Volume key not detected. Try again"
+#     fi
+#   done
+# }
 
 chooseport() {
   # Original idea by chainfire and ianmacd @xda-developers
@@ -39,12 +39,6 @@ chooseport() {
       [ $count -gt 6 ] && break
     done
     if $error; then
-      # abort "Volume key not detected!"
-      echo "Volume key not detected. Trying keycheck method"
-      export chooseport=chooseport_legacy VKSEL=chooseport_legacy
-      chooseport_legacy $delay
-      return $?
-    else
       error=true
       echo "Volume key not detected. Try again"
     fi
@@ -64,9 +58,11 @@ else
   ui_print "- (Re)Installing... (This could take some time :D)"
 fi
 
+ui_print
 ui_print "| Do you want to install the default configuration [Press Vol+]"
 ui_print "| Or Customize your installation? [Press Vol-]"
 ui_print "| Waiting until a key is pressed..."
+ui_print
 
 if chooseport 15; then
   ui_print "Installing with the default config..."
