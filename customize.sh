@@ -68,9 +68,11 @@ ui_print "| Do you want to install the default configuration [Press Vol+]"
 ui_print "| Or Customize your installation? [Press Vol-]"
 ui_print "| Waiting until a key is pressed..."
 
-if chooseport; then
+if chooseport 15; then
+  ui_print "Installing with the default config..."
   CUSTOMIZE=false
 else
+  ui_print "You're gonna customize the installation :D"
   CUSTOMIZE=true
 fi
 
