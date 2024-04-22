@@ -59,8 +59,12 @@ else
 fi
 
 ui_print
-ui_print "| Do you want to install the default configuration [Press Vol+]"
-ui_print "| Or Customize your installation? [Press Vol-]"
+ui_print "| Install with the default configuration?"
+ui_print "                             [Press Vol+]"
+ui_print
+ui_print "| Or Customize your installation?"
+ui_print "                     [Press Vol-]"
+ui_print
 ui_print "| Waiting until a key is pressed..."
 ui_print
 
@@ -84,6 +88,16 @@ while IFS= read -r PACKAGE_NAME; do
 
   if [ -z "$APP_PATH" ]; then
     continue
+  fi
+
+  if [ CUSTOMIZE == true ]; then
+    ui_print "Remove $PACKAGE_NAME?"
+    ui_print "       [Vol+] [Vol-]"
+
+    if ! chooseport 15; then
+      continue
+    fi
+    
   fi
 
   if [[ ! -z $(echo "$APP_PATH" | grep -E "^/data/app/.*$") ]]; then
