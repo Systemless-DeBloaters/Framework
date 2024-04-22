@@ -23,9 +23,6 @@ while IFS= read -r PACKAGE_NAME; do
   #        Get The Path of the App | Remove "package:"   | Remove the last part  | Just give me a uniqe Output
   APP_PATH=$(pm path $PACKAGE_NAME | sed "s/package://g" | sed 's|\(.*\)/.*|\1|' | uniq)
 
-  ui_print $PACKAGE_NAME
-  ui_print $APP_PATH
-
   if [ -z "$APP_PATH" ]; then
     continue
   fi
