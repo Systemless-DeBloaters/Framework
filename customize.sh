@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-chooseport() {
+choose() {
   # Original idea by chainfire and ianmacd @xda-developers
   [ "$1" ] && local delay=$1 || local delay=3
   local error=false
@@ -27,7 +27,7 @@ debloat_list="$MODPATH/bloat_packagelist.txt"
 id=$(grep "id=" $MODPATH/module.prop | cut -d'=' -f2-)
 last_install="/data/adb/modules/$id"
 
-if [ -f "$last_install/.lastreplace" ]; then
+if [[ -f "$last_install/.lastreplace" ]]; then
   REPLACE=""
   ui_print "- 𝗜𝗻𝘀𝘁𝗮𝗹𝗹𝗶𝗻𝗴... (𝗧𝗵𝗶𝘀 𝗰𝗼𝘂𝗹𝗱 𝘁𝗮𝗸𝗲 𝘀𝗼𝗺𝗲 𝘁𝗶𝗺𝗲 :𝗗)"
 else
@@ -47,11 +47,11 @@ ui_print
 ui_print "- 𝗪𝗮𝗶𝘁𝗶𝗻𝗴 𝘂𝗻𝘁𝗶𝗹 𝗮 𝗸𝗲𝘆 𝗶𝘀 𝗽𝗿𝗲𝘀𝘀𝗲𝗱..."
 ui_print
 
-if chooseport 15; then
-  ui_print "Installing with the default config..."
+if choose 15; then
+  ui_print "𝗜𝗻𝘀𝘁𝗮𝗹𝗹𝗶𝗻𝗴 𝘄𝗶𝘁𝗵 𝘁𝗵𝗲 𝗱𝗲𝗳𝗮𝘂𝗹𝘁 𝗰𝗼𝗻𝗳𝗶𝗴..."
   CUSTOMIZE=false
 else
-  ui_print "OK, You're gonna customize the installation :D"
+  ui_print "𝗢𝗞, 𝗬𝗼𝘂'𝗿𝗲 𝗴𝗼𝗻𝗻𝗮 𝗰𝘂𝘀𝘁𝗼𝗺𝗶𝘇𝗲 𝘁𝗵𝗲 𝗶𝗻𝘀𝘁𝗮𝗹𝗹𝗮𝘁𝗶𝗼𝗻 :𝗗"
   CUSTOMIZE=true
 fi
 
@@ -70,10 +70,11 @@ while IFS= read -r PACKAGE_NAME; do
   fi
 
   if [ $CUSTOMIZE == true ]; then
-    ui_print "Remove $PACKAGE_NAME?"
-    ui_print "[Yes: Vol+] [No: Vol-]"
+    ui_print
+    ui_print "𝗥𝗲𝗺𝗼𝘃𝗲 $PACKAGE_NAME?"
+    ui_print "[● 𝗬𝗲𝘀: 𝗩𝗼𝗹+] [● 𝗡𝗼: 𝗩𝗼𝗹-]"
 
-    if ! chooseport 15; then
+    if ! choose 15; then
       continue
     fi
 
@@ -81,7 +82,7 @@ while IFS= read -r PACKAGE_NAME; do
 
   if [[ ! -z $(echo "$APP_PATH" | grep -E "^/data/app/.*$") ]]; then
     rm -rf $APP_PATH # TODO: IF REMOVED DO THE UI_PRINT
-    ui_print "- Removed Updates of $PACKAGE_NAME ($APP_PATH)"
+    ui_print "- 𝗥𝗲𝗺𝗼𝘃𝗲𝗱 𝗨𝗽𝗱𝗮𝘁𝗲𝘀 𝗼𝗳 $PACKAGE_NAME ($APP_PATH)"
     continue
   fi
 
@@ -101,6 +102,6 @@ ui_print "-        𝗜𝗳 𝗮𝗻𝘆 𝗮𝗽𝗽𝘀 𝗮𝗿𝗲 𝗹𝗲�
 ui_print "-           𝗔𝗴𝗮𝗶𝗻 𝗪𝗜𝗧𝗛𝗢𝗨𝗧 𝗿𝗲𝗺𝗼𝘃𝗶𝗻𝗴 𝗶𝘁 𝗳𝗶𝗿𝘀𝘁         "
 ui_print "- ************************************************"
 
-ui_print "- ************************************"
-ui_print "- Installation Done! Reboot & Enjoy :)"
-ui_print "- ************************************"
+ui_print "- ********************************* "
+ui_print "- 𝗜𝗻𝘀𝘁𝗮𝗹𝗹𝗮𝘁𝗶𝗼𝗻 𝗗𝗼𝗻𝗲! 𝗥𝗲𝗯𝗼𝗼𝘁 & 𝗘𝗻𝗷𝗼𝘆 :)"
+ui_print "- ********************************* "
