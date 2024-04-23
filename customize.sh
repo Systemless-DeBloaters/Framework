@@ -1,27 +1,5 @@
 #!/system/bin/sh
 
-# chooseport_legacy() {
-#   # Keycheck binary by someone755 @Github, idea for code below by Zappo @xda-developers
-#   # Calling it first time detects previous input. Calling it second time will do what we want
-#   [ "$1" ] && local delay=$1 || local delay=3
-#   local error=false
-#   while true; do
-#     timeout 0 $MODPATH/common/addon/Volume-Key-Selector/tools/$ARCH32/keycheck
-#     timeout $delay $MODPATH/common/addon/Volume-Key-Selector/tools/$ARCH32/keycheck
-#     local sel=$?
-#     if [ $sel -eq 42 ]; then
-#       return 0
-#     elif [ $sel -eq 41 ]; then
-#       return 1
-#     elif $error; then
-#       abort "Volume key not detected!"
-#     else
-#       error=true
-#       echo "Volume key not detected. Try again"
-#     fi
-#   done
-# }
-
 chooseport() {
   # Original idea by chainfire and ianmacd @xda-developers
   [ "$1" ] && local delay=$1 || local delay=3
@@ -49,30 +27,31 @@ debloat_list="$MODPATH/bloat_packagelist.txt"
 id=$(grep "id=" $MODPATH/module.prop | cut -d'=' -f2-)
 last_install="/data/adb/modules/$id"
 
+ui_print
+ui_print "⏺ 𝗗𝗼 𝘆𝗼𝘂 𝘄𝗮𝗻𝘁 𝘁𝗼 𝗜𝗻𝘀𝘁𝗮𝗹𝗹"
+ui_print "⏺  W𝗶𝘁𝗵 𝘁𝗵𝗲 𝗱𝗲𝗳𝗮𝘂𝗹𝘁 𝗰𝗼𝗻𝗳𝗶𝗴𝘂𝗿𝗮𝘁𝗶𝗼𝗻?"
+ui_print "⏺                [⏺ 𝗣𝗿𝗲𝘀𝘀 𝗩𝗼𝗹+]"
+ui_print "⏺"
+ui_print "⏺ 𝗢𝗿 𝗖𝘂𝘀𝘁𝗼𝗺𝗶𝘇𝗲 𝘆𝗼𝘂𝗿 𝗶𝗻𝘀𝘁𝗮𝗹𝗹𝗮𝘁𝗶𝗼𝗻?"
+ui_print "⏺                [⏺ 𝗣𝗿𝗲𝘀𝘀 𝗩𝗼𝗹-]"
+ui_print "⏺"
+ui_print "⏺ 𝗪𝗮𝗶𝘁𝗶𝗻𝗴 𝘂𝗻𝘁𝗶𝗹 𝗮 𝗸𝗲𝘆 𝗶𝘀 𝗽𝗿𝗲𝘀𝘀𝗲𝗱..."
+ui_print
+
 if [ -f "$last_install/.lastreplace" ]; then
   REPLACE=""
-  ui_print "- Installing... (This could take some time :D)"
+  ui_print "- 𝗜𝗻𝘀𝘁𝗮𝗹𝗹𝗶𝗻𝗴... (𝗧𝗵𝗶𝘀 𝗰𝗼𝘂𝗹𝗱 𝘁𝗮𝗸𝗲 𝘀𝗼𝗺𝗲 𝘁𝗶𝗺𝗲 :𝗗)"
 else
   REPLACE=$(cat "$last_install/.lastreplace")
   REPLACE="$REPLACE "
-  ui_print "- (Re)Installing... (This could take some time :D)"
+  ui_print "- (𝗥𝗲)𝗜𝗻𝘀𝘁𝗮𝗹𝗹𝗶𝗻𝗴... (𝗧𝗵𝗶𝘀 𝗰𝗼𝘂𝗹𝗱 𝘁𝗮𝗸𝗲 𝘀𝗼𝗺𝗲 𝘁𝗶𝗺𝗲 :𝗗)"
 fi
-
-ui_print
-ui_print "| Install with the default configuration?"
-ui_print "|                            [Press Vol+]"
-ui_print "|"
-ui_print "| Or Customize your installation?"
-ui_print "|                    [Press Vol-]"
-ui_print "|"
-ui_print "| Waiting until a key is pressed..."
-ui_print
 
 if chooseport 15; then
   ui_print "Installing with the default config..."
   CUSTOMIZE=false
 else
-  ui_print "You're gonna customize the installation :D"
+  ui_print "OK, You're gonna customize the installation :D"
   CUSTOMIZE=true
 fi
 
@@ -92,7 +71,7 @@ while IFS= read -r PACKAGE_NAME; do
 
   if [ $CUSTOMIZE == true ]; then
     ui_print "Remove $PACKAGE_NAME?"
-    ui_print "       [Vol+] [Vol-]"
+    ui_print "[Yes: Vol+] [No: Vol-]"
 
     if ! chooseport 15; then
       continue
