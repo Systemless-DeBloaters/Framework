@@ -27,31 +27,32 @@ debloat_list="$MODPATH/bloat_packagelist.txt"
 id=$(grep "id=" $MODPATH/module.prop | cut -d'=' -f2-)
 last_install="/data/adb/modules/$id"
 
-if [[ -f "$last_install/.lastreplace" ]]; then
+if [ -f "$last_install/.lastreplace" ]; then
   REPLACE=""
-  ui_print "- 𝗜𝗻𝘀𝘁𝗮𝗹𝗹𝗶𝗻𝗴... (𝗧𝗵𝗶𝘀 𝗰𝗼𝘂𝗹𝗱 𝘁𝗮𝗸𝗲 𝘀𝗼𝗺𝗲 𝘁𝗶𝗺𝗲 :𝗗)"
+  ui_print "- Installing... (𝗧𝗵𝗶𝘀 𝗰𝗼𝘂𝗹𝗱 𝘁𝗮𝗸𝗲 𝘀𝗼𝗺𝗲 𝘁𝗶𝗺𝗲 :𝗗)"
 else
   REPLACE=$(cat "$last_install/.lastreplace")
   REPLACE="$REPLACE "
-  ui_print "- (𝗥𝗲)𝗜𝗻𝘀𝘁𝗮𝗹𝗹𝗶𝗻𝗴... (𝗧𝗵𝗶𝘀 𝗰𝗼𝘂𝗹𝗱 𝘁𝗮𝗸𝗲 𝘀𝗼𝗺𝗲 𝘁𝗶𝗺𝗲 :𝗗)"
+  ui_print "- (𝗥𝗲) Installing... (𝗧𝗵𝗶𝘀 𝗰𝗼𝘂𝗹𝗱 𝘁𝗮𝗸𝗲 𝘀𝗼𝗺𝗲 𝘁𝗶𝗺𝗲 :𝗗)"
 fi
 
 ui_print
-ui_print "- 𝗗𝗼 𝘆𝗼𝘂 𝘄𝗮𝗻𝘁 𝘁𝗼 𝗜𝗻𝘀𝘁𝗮𝗹𝗹"
-ui_print "-  𝗪𝗶𝘁𝗵 𝘁𝗵𝗲 𝗱𝗲𝗳𝗮𝘂𝗹𝘁 𝗰𝗼𝗻𝗳𝗶𝗴𝘂𝗿𝗮𝘁𝗶𝗼𝗻?"
-ui_print "                 [● 𝗣𝗿𝗲𝘀𝘀 𝗩𝗼𝗹+]"
-ui_print
-ui_print "- 𝗢𝗿 𝗖𝘂𝘀𝘁𝗼𝗺𝗶𝘇𝗲 𝘆𝗼𝘂𝗿 𝗶𝗻𝘀𝘁𝗮𝗹𝗹𝗮𝘁𝗶𝗼𝗻?"
-ui_print "                 [● 𝗣𝗿𝗲𝘀𝘀 𝗩𝗼𝗹-]"
-ui_print
-ui_print "- 𝗪𝗮𝗶𝘁𝗶𝗻𝗴 𝘂𝗻𝘁𝗶𝗹 𝗮 𝗸𝗲𝘆 𝗶𝘀 𝗽𝗿𝗲𝘀𝘀𝗲𝗱..."
+ui_print "| Do you want to install with"
+ui_print "|  The default configuration?"
+ui_print "|               [● 𝗣𝗿𝗲𝘀𝘀 𝗩𝗼𝗹+]"
+ui_print "|"
+ui_print "| Or Customize your Installation?"
+ui_print "|               [● 𝗣𝗿𝗲𝘀𝘀 𝗩𝗼𝗹-]"
+ui_print "|"
+ui_print "| Waiting until a key is pressed..."
 ui_print
 
 if choose 15; then
-  ui_print "𝗜𝗻𝘀𝘁𝗮𝗹𝗹𝗶𝗻𝗴 𝘄𝗶𝘁𝗵 𝘁𝗵𝗲 𝗱𝗲𝗳𝗮𝘂𝗹𝘁 𝗰𝗼𝗻𝗳𝗶𝗴..."
+  ui_print "- Installing With the default config..."
   CUSTOMIZE=false
 else
-  ui_print "𝗢𝗞, 𝗬𝗼𝘂'𝗿𝗲 𝗴𝗼𝗻𝗻𝗮 𝗰𝘂𝘀𝘁𝗼𝗺𝗶𝘇𝗲 𝘁𝗵𝗲 𝗶𝗻𝘀𝘁𝗮𝗹𝗹𝗮𝘁𝗶𝗼𝗻 :𝗗"
+  ui_print "- OK, Lets customize the installation :D"
+  ui_print
   CUSTOMIZE=true
 fi
 
@@ -71,7 +72,7 @@ while IFS= read -r PACKAGE_NAME; do
 
   if [ $CUSTOMIZE == true ]; then
     ui_print
-    ui_print "𝗥𝗲𝗺𝗼𝘃𝗲 $PACKAGE_NAME?"
+    ui_print "Remove $PACKAGE_NAME?"
     ui_print "[● 𝗬𝗲𝘀: 𝗩𝗼𝗹+] [● 𝗡𝗼: 𝗩𝗼𝗹-]"
 
     if ! choose 15; then
@@ -82,7 +83,7 @@ while IFS= read -r PACKAGE_NAME; do
 
   if [[ ! -z $(echo "$APP_PATH" | grep -E "^/data/app/.*$") ]]; then
     rm -rf $APP_PATH # TODO: IF REMOVED DO THE UI_PRINT
-    ui_print "- 𝗥𝗲𝗺𝗼𝘃𝗲𝗱 𝗨𝗽𝗱𝗮𝘁𝗲𝘀 𝗼𝗳 $PACKAGE_NAME ($APP_PATH)"
+    ui_print "- Removed updates of $PACKAGE_NAME ($APP_PATH)"
     continue
   fi
 
@@ -102,6 +103,6 @@ ui_print "-        𝗜𝗳 𝗮𝗻𝘆 𝗮𝗽𝗽𝘀 𝗮𝗿𝗲 𝗹𝗲�
 ui_print "-           𝗔𝗴𝗮𝗶𝗻 𝗪𝗜𝗧𝗛𝗢𝗨𝗧 𝗿𝗲𝗺𝗼𝘃𝗶𝗻𝗴 𝗶𝘁 𝗳𝗶𝗿𝘀𝘁         "
 ui_print "- ************************************************"
 
-ui_print "- ********************************* "
-ui_print "- 𝗜𝗻𝘀𝘁𝗮𝗹𝗹𝗮𝘁𝗶𝗼𝗻 𝗗𝗼𝗻𝗲! 𝗥𝗲𝗯𝗼𝗼𝘁 & 𝗘𝗻𝗷𝗼𝘆 :)"
-ui_print "- ********************************* "
+ui_print "- ************************************"
+ui_print "- Installation Done! Reboot & Enjoy :)"
+ui_print "- ************************************"
