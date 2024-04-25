@@ -1,5 +1,11 @@
 #!/system/bin/sh
 
+# Detect What aapt to use
+chmod +x "$MODPATH"/tools/*
+[ "$($MODPATH/tools/aapt v)" ] && AAPT=aapt
+[ "$($MODPATH/tools/aapt64 v)" ] && AAPT=aapt64
+cp -af "$MODPATH"/tools/$AAPT "$MODPATH"/aapt
+
 choose() {
   # Original idea by chainfire and ianmacd @xda-developers
   [ "$1" ] && local delay=$1 || local delay=3
@@ -63,16 +69,19 @@ while IFS= read -r PACKAGE_NAME; do
     continue
   fi
 
-  #        Get The Path of the App | Remove "package:"   | Remove the last part  | Just give me a uniqe Output
-  APP_PATH=$(pm path $PACKAGE_NAME | sed "s/package://g" | sed 's|\(.*\)/.*|\1|' | uniq)
+  #        Get The Path of the App | Remove "package:"
+  APP_PATH=$(pm path $PACKAGE_NAME | sed "s/package://g")
 
   if [ -z "$APP_PATH" ]; then
     continue
   fi
 
+  APP_NAME=$("$MODPATH"/aapt dump badging $APP_PATH | grep -Eo "application-label:'[^']+'" | sed -e "s/application-label://" -e "s/'//g")
+  APP_PATH_FOLDER=$(echo $APP_PATH | sed 's|\(.*\)/.*|\1|' | uniq)
+
   if [ $CUSTOMIZE == true ]; then
     ui_print
-    ui_print "Remove $PACKAGE_NAME?"
+    ui_print "Remove $APP_NAME ($PACKAGE_NAME)?"
     ui_print "[● 𝗬𝗲𝘀: 𝗩𝗼𝗹+] [● 𝗡𝗼: 𝗩𝗼𝗹-]"
 
     if ! choose 15; then
@@ -81,18 +90,18 @@ while IFS= read -r PACKAGE_NAME; do
 
   fi
 
-  if [[ ! -z $(echo "$APP_PATH" | grep -E "^/data/app/.*$") ]]; then
-    rm -rf $APP_PATH # TODO: IF REMOVED DO THE UI_PRINT
-    ui_print "- Removed updates of $PACKAGE_NAME ($APP_PATH)"
+  if [[ ! -z $(echo "$APP_PATH_FOLDER" | grep -E "^/data/app/.*$") ]]; then
+    rm -rf $APP_PATH_FOLDER # TODO: IF REMOVED DO THE UI_PRINT
+    ui_print "- Removed updates of $APP_NAME ($PACKAGE_NAME)"
     continue
   fi
 
   # Add /system to paths that start with anything other then /system
-  if [ -z $(echo $APP_PATH | grep -E "^\/(system)\/.*$") ]; then
-    APP_PATH="/system$APP_PATH"
+  if [ -z $(echo $APP_PATH_FOLDER | grep -E "^\/(system)\/.*$") ]; then
+    APP_PATH="/system$APP_PATH_FOLDER"
   fi
 
-  REPLACE="$REPLACE$APP_PATH "
+  REPLACE="$REPLACE$APP_PATH_FOLDER "
 
 done < "$debloat_list"
 
