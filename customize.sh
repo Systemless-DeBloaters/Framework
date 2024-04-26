@@ -81,10 +81,11 @@ while IFS= read -r PACKAGE_NAME; do
 
   if [ $CUSTOMIZE == true ]; then
     ui_print
-    ui_print "Remove $APP_NAME ($PACKAGE_NAME)?"
+    ui_print "UnInstall $APP_NAME ($PACKAGE_NAME)?"
     ui_print "[● 𝗬𝗲𝘀: 𝗩𝗼𝗹+] [● 𝗡𝗼: 𝗩𝗼𝗹-]"
 
     if ! choose 15; then
+      ui_print "- Didn't UnInstall $APP_NAME ($PACKAGE_NAME)"
       continue
     fi
 
@@ -92,7 +93,7 @@ while IFS= read -r PACKAGE_NAME; do
 
   if [[ ! -z $(echo "$APP_PATH_FOLDER" | grep -E "^/data/app/.*$") ]]; then
     rm -rf $APP_PATH_FOLDER # TODO: IF REMOVED DO THE UI_PRINT
-    ui_print "- Removed updates of $APP_NAME ($PACKAGE_NAME)"
+    ui_print "- UnInstalled updates of $APP_NAME ($PACKAGE_NAME)"
     continue
   fi
 
@@ -102,6 +103,7 @@ while IFS= read -r PACKAGE_NAME; do
   fi
 
   REPLACE="$REPLACE$APP_PATH_FOLDER "
+  ui_print "- UnInstalled $APP_NAME ($PACKAGE_NAME)"
 
 done < "$debloat_list"
 
